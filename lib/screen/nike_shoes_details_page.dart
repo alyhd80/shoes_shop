@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoes_shop/widget/nike_shopping_cart.dart';
 import 'package:shoes_shop/widget/shake_transition.dart';
 import 'package:shoes_shop/widget/shoes_size_item_widget.dart';
 
@@ -46,7 +47,6 @@ class NikeShoesDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ShakeTransition(
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -97,7 +97,6 @@ class NikeShoesDetails extends StatelessWidget {
                       ),
                       ShakeTransition(
                         duration: Duration(milliseconds: 1100),
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: const [
@@ -133,6 +132,7 @@ class NikeShoesDetails extends StatelessWidget {
                 child: Row(
                   children: [
                     FloatingActionButton(
+                      elevation: 5,
                       heroTag: "fave_1",
                       backgroundColor: Colors.white,
                       onPressed: () {},
@@ -143,9 +143,12 @@ class NikeShoesDetails extends StatelessWidget {
                     ),
                     Spacer(),
                     FloatingActionButton(
+                      elevation: 5,
                       heroTag: "fave_2",
                       backgroundColor: Colors.black,
-                      onPressed: () {},
+                      onPressed: () {
+                        _openShoppingCart(context, shoes);
+                      },
                       child: Icon(Icons.shopping_cart),
                     )
                   ],
@@ -156,7 +159,7 @@ class NikeShoesDetails extends StatelessWidget {
                     duration: Duration(milliseconds: 200),
                     left: 0,
                     right: 0,
-                    bottom: value ? 0.0 : -kToolbarHeight,
+                    bottom: value ? 0.0 : -kToolbarHeight * 1.5,
                     child: child!);
               })
         ],
@@ -211,7 +214,9 @@ class NikeShoesDetails extends StatelessWidget {
                   child: ShakeTransition(
                     axis: Axis.vertical,
                     offset: 10,
-                    duration: index==0?Duration(milliseconds: 900):Duration.zero,
+                    duration: index == 0
+                        ? Duration(milliseconds: 900)
+                        : Duration.zero,
                     child: Hero(
                       tag: tag,
                       child: Image.asset(
@@ -225,5 +230,19 @@ class NikeShoesDetails extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _openShoppingCart(BuildContext context, NikeShoes shoes) async {
+    notifierBottomVisible.value = false;
+    await Navigator.of(context).push(PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (_, animation1, __) {
+          return FadeTransition(
+              opacity: animation1,
+              child: NikeShoppingCart(
+                shoes: shoes,
+              ));
+        }));
+    notifierBottomVisible.value = true;
   }
 }
